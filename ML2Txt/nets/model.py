@@ -21,6 +21,7 @@ def createRnn():
     ## 1. 初始化使用Rnn
     rnn = nn.RNN(100,10) # 100 表示emb_len也就是表征长，10表示hidden_len
     print(rnn.all_weights)
+
 def getOneRnn():
     """
     使用 1 层的 Rnn网络
@@ -35,12 +36,31 @@ def getOneRnn():
     h0 = torch.zeros(1,3,20) # 也就是初始化是一个[num_layers,batch,hidden_len],也是最后的信息shape
     out,h_next = rnn(x,h0)
 
-    print(x.shape,h_next.shape) # out表示之前所有得到的暂存h,而h_next表示最后一个 ，所以相较于h_next，out的第一位是序列长
+    print(out.shape,h_next.shape) # out表示之前所有得到的暂存h,而h_next表示最后一个 ，所以相较于h_next，out的第一位是序列长
     # ： torch.Size([10, 3, 20]) torch.Size([1, 3, 20])
 
+def getFourLayersRnn():
+    """
+    使用 4 层 的 Rnn网路
+    :return:
+    """
 
+    rnn = nn.RNN(100,20,num_layers=4)
+    x = torch.randn(10,3,100)
+    h0 = torch.zeros(4,3,20)
+
+    print(torch.cuda.is_available())
+
+    if torch.cuda.is_available():
+        rnn = rnn.cuda()
+        x = x.cuda()
+        h0 = h0.cuda()
+
+    out,h_next = rnn(x,h0)
+    print(rnn._parameters.keys())
+    print(out.shape,h_next.shape)
 
 if __name__ == '__main__':
-
     # createRnn()
-    getOneRnn()
+    # getOneRnn()
+    getFourLayersRnn()
